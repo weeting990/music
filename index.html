@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>猜歌大作戰｜30 分鐘互動主持簡報</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&family=Bungee&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b0616; --bg2:#160a2e; --ink:#f6f2ff; --mute:#b9aee0;
+  --card:rgba(255,255,255,.07); --line:rgba(255,255,255,.14);
+  --pink:#ff2d95; --cyan:#21e6ff; --yellow:#ffe14d; --purple:#8b5cf6; --lime:#7dffb0;
+  --accent:var(--cyan);
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+/* 本簡報刻意固定為深色霓虹風，亮/暗模式皆維持同一套配色 */
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --bg:#0b0616; --ink:#f6f2ff; } }
+:root[data-theme="dark"]{ --bg:#0b0616; --ink:#f6f2ff; }
+html{scroll-padding-top:env(safe-area-inset-top,0px);}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  background-color:var(--bg);
+  background-image:radial-gradient(1200px 700px at 80% -10%,#2a0f57 0%,transparent 60%),radial-gradient(900px 600px at -10% 110%,#3b0b3f 0%,transparent 55%);
+  color:var(--ink);
+  font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,-apple-system,sans-serif;
+  overflow:hidden;
+}
+.bgfx{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.bgfx i{position:absolute;width:55vmax;height:55vmax;border-radius:50%;filter:blur(90px);opacity:.28;animation:drift 20s ease-in-out infinite alternate}
+.bgfx i:nth-child(1){background:var(--pink);left:-20vmax;top:-15vmax}
+.bgfx i:nth-child(2){background:var(--cyan);right:-22vmax;bottom:-20vmax;animation-delay:-8s}
+.bgfx i:nth-child(3){background:var(--purple);left:30vw;top:30vh;width:35vmax;height:35vmax;opacity:.18;animation-delay:-14s}
+@keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(6vw,4vh) scale(1.15)}}
+
+#app{height:100%;display:flex;flex-direction:column;position:relative;z-index:1}
+#prog{height:4px;background:rgba(255,255,255,.08);flex:0 0 auto}
+#prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--pink),var(--yellow));transition:width .4s ease}
+#stage{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;display:flex;position:relative}
+
+.slide{margin:auto;width:100%;max-width:1100px;padding:clamp(14px,3vw,36px);display:flex;flex-direction:column;align-items:center;gap:clamp(10px,2.2vh,22px);text-align:center;animation:slin .5s cubic-bezier(.2,.8,.2,1) both}
+@keyframes slin{from{opacity:0;transform:translateY(18px) scale(.985)}to{opacity:1;transform:none}}
+
+.kicker{font-family:"Bungee","Impact",sans-serif;letter-spacing:.18em;font-size:clamp(11px,1.6vw,16px);color:var(--accent)}
+.title{font-weight:900;font-size:clamp(52px,13vw,150px);line-height:1.02;letter-spacing:.04em;background:linear-gradient(100deg,var(--cyan),var(--pink) 55%,var(--yellow));-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 28px rgba(255,45,149,.45))}
+.sub{font-family:"Bungee","Impact",sans-serif;font-size:clamp(14px,3vw,30px);letter-spacing:.3em;color:var(--mute)}
+h2{font-weight:900;font-size:clamp(30px,6.2vw,64px);letter-spacing:.04em;color:var(--ink);text-shadow:0 0 26px color-mix(in srgb,var(--accent) 65%,transparent)}
+h2 small{display:block;font-family:"Bungee","Impact",sans-serif;font-size:clamp(11px,1.7vw,16px);letter-spacing:.24em;color:var(--accent);margin-bottom:6px;text-shadow:none}
+.lead{font-size:clamp(16px,2.6vw,26px);color:var(--mute);max-width:32em;line-height:1.55}
+.lead b{color:var(--ink)}
+
+.badges{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.badges span,.chip{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-weight:700;font-size:clamp(13px,2vw,18px)}
+.chip{border-color:var(--accent);color:var(--accent);font-family:"Bungee","Noto Sans TC",sans-serif;font-size:clamp(11px,1.8vw,15px);letter-spacing:.06em;padding:6px 14px}
+.chip.ghost{color:var(--ink);border-color:var(--line)}
+.chip.pts{background:var(--accent);color:#100826;border-color:transparent;box-shadow:0 0 22px color-mix(in srgb,var(--accent) 55%,transparent)}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:14px;width:100%}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:clamp(16px,2.4vw,26px);text-align:left;backdrop-filter:blur(6px)}
+.card .ic{font-size:clamp(28px,4.4vw,44px);line-height:1}
+.card h3{font-size:clamp(18px,2.6vw,26px);font-weight:900;margin:10px 0 6px}
+.card p{color:var(--mute);font-size:clamp(14px,1.9vw,18px);line-height:1.55}
+.card.c1{border-color:color-mix(in srgb,var(--cyan) 55%,transparent)}
+.card.c2{border-color:color-mix(in srgb,var(--pink) 55%,transparent)}
+.card.c3{border-color:color-mix(in srgb,var(--yellow) 55%,transparent)}
+.stars{color:var(--yellow);letter-spacing:.1em;font-size:clamp(16px,2.4vw,22px)}
+.bigpts{font-family:"Bungee","Impact",sans-serif;font-size:clamp(44px,8vw,84px);line-height:1;color:var(--accent);text-shadow:0 0 26px color-mix(in srgb,var(--accent) 60%,transparent)}
+
+/* buttons */
+.btn{font:inherit;font-weight:700;padding:10px 20px;min-height:48px;border-radius:999px;border:1.5px solid var(--accent);background:transparent;color:var(--ink);cursor:pointer;font-size:clamp(15px,2.2vw,20px);transition:transform .12s ease,background .2s ease}
+.btn:active{transform:scale(.96)}
+.btn.hot{background:var(--accent);color:#100826;box-shadow:0 0 28px color-mix(in srgb,var(--accent) 55%,transparent)}
+.btn.ghost{border-color:var(--line)}
+.btn.xl{font-size:clamp(18px,3vw,26px);padding:14px 34px}
+.ctrl{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+
+/* equalizer */
+.eq{display:flex;align-items:flex-end;gap:4px;height:clamp(48px,10vh,90px);width:min(560px,92%)}
+.eq.big{height:clamp(70px,14vh,130px);width:min(760px,96%)}
+.eq i{flex:1;height:var(--h);background:linear-gradient(var(--accent),var(--pink));border-radius:4px;transform-origin:bottom;animation:bounce .9s ease-in-out var(--d) infinite alternate;animation-play-state:paused;transform:scaleY(.18)}
+.eq.live i{animation-play-state:running}
+@keyframes bounce{from{transform:scaleY(.14)}to{transform:scaleY(1)}}
+
+/* flow */
+.step{display:flex;gap:14px;align-items:flex-start;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px 18px;width:100%}
+.step .n{flex:0 0 auto;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:#100826;font-weight:900;font-family:"Bungee",sans-serif}
+.step p{font-size:clamp(15px,2.2vw,22px);line-height:1.5;padding-top:3px}
+.steps{display:flex;flex-direction:column;gap:10px;width:min(760px,100%)}
+
+/* timetable */
+.tt{display:flex;flex-direction:column;gap:10px;width:min(880px,100%)}
+.ttr{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center;text-align:left}
+.ttr .tm{font-family:"Bungee",sans-serif;font-size:clamp(13px,2vw,18px);color:var(--mute);width:5.2em}
+.ttr .bar{position:relative;height:clamp(44px,7vh,60px);border-radius:14px;background:var(--card);border:1px solid var(--line);overflow:hidden}
+.ttr .bar b{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,color-mix(in srgb,var(--c) 70%,transparent),color-mix(in srgb,var(--c) 22%,transparent));border-right:2px solid var(--c)}
+.ttr .bar span{position:absolute;inset:0;display:flex;align-items:center;padding:0 14px;font-weight:700;font-size:clamp(13px,2vw,19px);white-space:nowrap}
+
+/* question */
+.qtop{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.qnum{font-family:"Bungee","Impact",sans-serif;font-size:clamp(60px,15vw,160px);line-height:1;color:var(--ink);text-shadow:0 0 34px color-mix(in srgb,var(--accent) 70%,transparent),0 0 4px var(--accent)}
+.qtip{font-size:clamp(16px,2.8vw,28px);font-weight:700;color:var(--accent)}
+.timer{position:relative;width:clamp(120px,22vh,190px);aspect-ratio:1}
+.timer svg{width:100%;height:100%;transform:rotate(-90deg)}
+.timer circle{fill:none;stroke-width:8}
+.timer .bg{stroke:rgba(255,255,255,.12)}
+.timer .fg{stroke:var(--accent);stroke-linecap:round;stroke-dasharray:339.3;stroke-dashoffset:0;transition:stroke-dashoffset .12s linear;filter:drop-shadow(0 0 6px var(--accent))}
+.timer b{position:absolute;inset:0;display:grid;place-items:center;font-family:"Bungee",sans-serif;font-size:clamp(40px,8vh,64px)}
+.timer.urgent .fg{stroke:var(--pink)}
+.timer.urgent b{color:var(--pink);animation:pulse .5s ease-in-out infinite alternate}
+.timer.done b{color:var(--pink)}
+@keyframes pulse{from{transform:scale(1)}to{transform:scale(1.18)}}
+.ans{min-height:clamp(74px,12vh,110px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;width:100%;padding:8px 16px;border-radius:22px;border:2px dashed var(--line)}
+.ans .aq{font-size:clamp(26px,5vw,44px);letter-spacing:.4em;color:var(--mute);font-weight:900}
+.ans.show{border:2px solid var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);animation:pop .5s cubic-bezier(.2,1.4,.3,1) both}
+.ans .at{font-weight:900;font-size:clamp(30px,6.4vw,64px);line-height:1.15;text-shadow:0 0 24px var(--accent)}
+.ans .aa{font-size:clamp(16px,3vw,28px);color:var(--accent);font-weight:700}
+.hintline{font-size:clamp(14px,2.2vw,20px);color:var(--yellow);min-height:1.4em}
+@keyframes pop{from{transform:scale(.7);opacity:0}to{transform:none;opacity:1}}
+
+/* rank */
+.rank{display:flex;flex-direction:column;gap:10px;width:min(760px,100%)}
+.rrow{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;background:var(--card);border:1px solid var(--tc);border-radius:18px;padding:10px 16px;position:relative;overflow:hidden;text-align:left}
+.rrow .fill{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,color-mix(in srgb,var(--tc) 40%,transparent),transparent);transition:width .6s ease}
+.rrow>*{position:relative}
+.rrow .md{font-size:clamp(24px,4vw,38px)}
+.rrow .rn{font-weight:900;font-size:clamp(18px,3vw,30px)}
+.rrow .rs{font-family:"Bungee",sans-serif;font-size:clamp(24px,4.4vw,42px);color:var(--tc)}
+.rrow.first{box-shadow:0 0 34px color-mix(in srgb,var(--tc) 60%,transparent)}
+
+/* host */
+.hostwarn{padding:6px 14px;border-radius:999px;background:rgba(255,45,149,.16);border:1px solid var(--pink);color:var(--pink);font-weight:700;font-size:clamp(12px,1.8vw,16px)}
+.hcols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:12px;width:100%;text-align:left}
+.hcol{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:12px}
+.hcol h4{font-size:clamp(14px,2vw,18px);margin-bottom:8px;color:var(--c)}
+.hrow{display:grid;grid-template-columns:1.4em 1fr;gap:6px;align-items:baseline;padding:4px 0;border-top:1px solid var(--line);font-size:clamp(13px,1.8vw,16px)}
+.hrow .hn{color:var(--mute);font-family:"Bungee",sans-serif;font-size:.8em}
+.ed{outline:none;border-radius:6px;padding:0 4px;display:inline-block;min-width:2em}
+.ed:focus{background:rgba(255,255,255,.12)}
+.ed.art{color:var(--mute);font-size:.85em}
+.hnote{font-size:clamp(12px,1.7vw,15px);color:var(--mute);line-height:1.7;text-align:left;width:100%;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:12px 16px}
+.hnote kbd{font-family:"Bungee",sans-serif;font-size:.85em;background:rgba(255,255,255,.12);border-radius:6px;padding:1px 6px;color:var(--ink)}
+
+/* bottom bar */
+#bar{flex:0 0 auto;display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(10,5,22,.86);backdrop-filter:blur(10px);border-top:1px solid var(--line)}
+#teams{flex:1;min-width:0;display:flex;gap:8px;overflow-x:auto;align-items:center;padding:2px 0}
+.team{flex:0 0 auto;display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.06);border:1.5px solid var(--tc);border-radius:16px;padding:4px 6px}
+.team button{font:inherit;font-weight:900;border:0;border-radius:12px;min-width:40px;height:44px;cursor:pointer;color:#100826;background:var(--tc);font-size:15px}
+.team button.tm{background:rgba(255,255,255,.1);color:var(--ink);min-width:34px}
+.team button:active{transform:scale(.92)}
+.tinfo{display:flex;flex-direction:column;align-items:center;min-width:3.6em;line-height:1.1}
+.tn{font-size:12px;color:var(--mute);outline:none;max-width:5.5em;overflow:hidden;white-space:nowrap;text-overflow:clip;padding:0 2px;border-radius:4px}
+.tn:focus{background:rgba(255,255,255,.15);color:var(--ink)}
+.ts{font-family:"Bungee",sans-serif;font-size:24px;color:var(--tc)}
+.ts.pop{animation:tpop .4s ease}
+@keyframes tpop{50%{transform:scale(1.5)}}
+.tctl{flex:0 0 auto;display:flex;flex-direction:column;gap:4px}
+.tctl button{font:inherit;width:32px;height:22px;border-radius:8px;border:1px solid var(--line);background:transparent;color:var(--mute);cursor:pointer;line-height:1}
+#nav{flex:0 0 auto;display:flex;align-items:center;gap:8px}
+#nav button{font:inherit;font-size:26px;width:48px;height:48px;border-radius:50%;border:1.5px solid var(--cyan);background:transparent;color:var(--ink);cursor:pointer;line-height:1}
+#nav button#next{background:var(--cyan);color:#100826}
+#nav button:active{transform:scale(.92)}
+#pg{font-family:"Bungee",sans-serif;font-size:12px;color:var(--mute);min-width:4.4em;text-align:center}
+
+.acfg{width:min(560px,100%);text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:4px 14px;font-size:clamp(13px,1.8vw,16px);color:var(--mute)}
+.acfg summary{cursor:pointer;padding:8px 0;font-weight:700;color:var(--ink)}
+.acfg .arow{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:6px 0 10px}
+.acfg input[type=number]{width:4.6em;font:inherit;background:rgba(255,255,255,.1);border:1px solid var(--line);border-radius:8px;color:var(--ink);padding:6px}
+.hlink{color:var(--cyan);text-decoration:none;margin-left:4px}
+.hs{margin-left:4px}
+.bulkst{margin-top:8px;color:var(--ink);font-weight:700}
+.conf{position:fixed;top:-24px;width:10px;height:16px;border-radius:2px;z-index:50;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translate3d(var(--dx),110vh,0) rotate(720deg);opacity:.9}}
+@media (max-width:560px){ #pg{display:none} .team .tinfo{min-width:3em} }
+@media (prefers-reduced-motion:reduce){ .bgfx i,.eq i,.slide{animation:none} }
+</style>
+</head>
+<body>
+<div class="bgfx"><i></i><i></i><i></i></div>
+<div id="app">
+  <div id="prog"><i></i></div>
+  <main id="stage"></main>
+  <footer id="bar">
+    <div id="teams"></div>
+    <div id="nav"><button id="prev" data-act="prev" aria-label="上一頁">‹</button><span id="pg"></span><button id="next" data-act="next" aria-label="下一頁">›</button></div>
+  </footer>
+</div>
+<input type="file" id="filepick" accept="audio/*,.mp3,.m4a,.wav,.aac,.ogg" hidden>
+<input type="file" id="bulkpick" accept="audio/*,.mp3,.m4a,.wav,.aac,.ogg" multiple hidden>
+
+<script>
+/* ===================== 題庫（可在最後一頁「主持人備歌」直接點擊修改） ===================== */
+var ROUNDS = [
+  { label:'ROUND 1', name:'前奏猜歌', theme:'🇹🇼 台灣獨立樂團篇', emoji:'🎧', color:'var(--cyan)', pts:1, secs:15, stars:'★☆☆',
+    tip:'只播前奏 — 聽出來就搶答！',
+    how:['主持人播放歌曲前奏（約 5–8 秒）','聽出來的隊伍舉手／按鈴搶答','答對得分；答錯失去本題資格'],
+    songs:[['世界盡頭','TRASH'],['不是因為天氣晴朗才愛你','理想混蛋'],['我還年輕 我還年輕','老王樂隊'],['長成什麼樣子算愛情','麋先生'],['大風吹','草東沒有派對'],['爛情歌','hue'],['My Jinji','落日飛車']] },
+  { label:'ROUND 2', name:'旋律猜歌', theme:'🌟 新生代創作歌手篇', emoji:'🎼', color:'var(--pink)', pts:2, secs:15, stars:'★★☆',
+    tip:'只放純旋律，沒有歌詞 — 靠旋律線索猜歌！',
+    how:['主持人播放歌曲的純旋律片段（前奏、間奏或哼唱版，約 8 秒）','聽出來的隊伍舉手／按鈴搶答','答對得分；答錯失去本題資格'],
+    songs:[['愛你但不說出口','Karencici'],['客客氣氣','鶴The Crane'],['出來','LEO王'],['神明所在','珂拉琪'],['有一種悲傷','ØZI'],['素人','美秀集團'],['賊','9m88'],['為你我學會','Vast & Hazy']] },
+  { label:'ROUND 3', name:'3 秒猜歌', theme:'🎲 綜合混戰篇（台灣 × 日韓 × 歐美）', emoji:'⚡', color:'var(--yellow)', pts:3, secs:10, stars:'★★★',
+    tip:'只給 3 秒 — 反應要比腦袋快！',
+    how:['歌曲副歌只播 3 秒，沒有第二次機會','搶答限時 10 秒，答錯就不能再猜','最後一題「終極題」分數 ×2，逆轉勝關鍵！'],
+    songs:[['Someone Like You','Adele'],['希望你回來','TRASH'],['愛人錯過','告五人'],['夜に駆ける','YOASOBI'],['偽','hue'],['山海','草東沒有派對'],["Don't Stop Believin'",'Journey'],['レオ','優里']] },
+  { label:'ROUND 4', name:'經典金曲', theme:'📻 1980–2000 懷舊金曲篇', emoji:'📼', color:'var(--purple)', pts:2, secs:15, stars:'★★☆',
+    tip:'跨世代金曲 — 讓爸媽也能一起搶答！',
+    how:['主持人播放經典歌曲片段（約 8 秒）','聽出來的隊伍舉手／按鈴搶答','答對得分；答錯失去本題資格'],
+    songs:[['大約在冬季','齊秦'],['浪人情歌','伍佰'],['你把我灌醉','李宗盛'],['光輝歲月','Beyond'],['玫瑰的名字','張雨生'],['領悟','辛曉琪'],['戀曲1990','羅大佑']] },
+  { label:'SUDDEN DEATH', name:'同分加賽', theme:'⚔️ 神秘歌曲', emoji:'⚔️', color:'var(--lime)', pts:1, secs:30, stars:'🔥',
+    tip:'神秘歌曲 — 先答對者封王！',
+    how:['只有同分隊伍參加，各派 1 位代表','主持人播放神秘歌曲，任何時間點都可搶答','先答對者 +1 分，直接封王'],
+    songs:[['Take On Me','a-ha']] }
+];
+var TC = ['#21e6ff','#ff2d95','#ffe14d','#7dffb0','#b28cff','#ff9a3c'];
+
+/* ===================== 儲存（僅本機瀏覽器） ===================== */
+var store = {
+  get:function(k){ try{ return JSON.parse(localStorage.getItem(k)); }catch(e){ return null; } },
+  set:function(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+};
+var teams = [{n:'A 隊',s:0},{n:'B 隊',s:0},{n:'C 隊',s:0},{n:'D 隊',s:0}];
+var idx = 0;
+var saved = store.get('cg_state_v4');
+var oldState = store.get('cg_state_v3') || store.get('cg_state_v2') || store.get('cg_state');
+if(!saved && oldState && Array.isArray(oldState.teams)){ saved = {teams:oldState.teams, idx:oldState.idx}; }
+var clipCfg = {}; if(saved && saved.clip && typeof saved.clip==='object'){ clipCfg = saved.clip; }
+var RAW={}, DEC={}, META={}, curSrc=null, pickKey=null, BULKMSG='';
+if(saved && Array.isArray(saved.teams) && saved.teams.length>=2 && saved.teams.length<=6){
+  teams = saved.teams.map(function(t){ return {n:String(t.n||'隊伍').slice(0,8), s:Math.max(0,parseInt(t.s,10)||0)}; });
+}
+if(saved && Array.isArray(saved.songs) && saved.songs.length===ROUNDS.length){
+  saved.songs.forEach(function(rs,ri){
+    if(Array.isArray(rs) && rs.length===ROUNDS[ri].songs.length){
+      rs.forEach(function(sg,qi){ if(Array.isArray(sg) && sg.length===2){ ROUNDS[ri].songs[qi]=[String(sg[0]),String(sg[1])]; } });
+    }
+  });
+}
+
+/* ===================== 投影片清單 ===================== */
+var SL = [{t:'cover'},{t:'goal'},{t:'flow'},{t:'rules'},{t:'score'},{t:'time'}];
+[0,1,2,3,4].forEach(function(ri){
+  SL.push({t:'round',ri:ri});
+  ROUNDS[ri].songs.forEach(function(_,qi){ SL.push({t:'q',ri:ri,qi:qi}); });
+});
+SL.push({t:'result'}); SL.push({t:'host'});
+var HOST_IDX = SL.length-1;
+if(saved && Number.isInteger(saved.idx) && saved.idx>=0 && saved.idx<SL.length){ idx = saved.idx; }
+var lastIdx = 0;
+var ui = {rev:{}, hint:{}};
+
+/* ===================== 工具 ===================== */
+function esc(s){ return String(s).replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+function eq(n){ var h=''; for(var i=0;i<n;i++){ h+='<i style="--d:'+(Math.random()*.8).toFixed(2)+'s;--h:'+(35+Math.floor(Math.random()*65))+'%"></i>'; } return h; }
+function save(){ store.set('cg_state_v4',{teams:teams,idx:idx,songs:ROUNDS.map(function(r){return r.songs;}),clip:clipCfg}); }
+function qPts(s){ return ROUNDS[s.ri].pts * ((s.ri===2 && s.qi===ROUNDS[2].songs.length-1)?2:1); }
+function curPts(){ var s=SL[idx]; return s.t==='q' ? qPts(s) : 1; }
+
+/* ===================== 音效 ===================== */
+var AC=null;
+function ensureAudio(){ try{ if(!AC){ AC=new (window.AudioContext||window.webkitAudioContext)(); } if(AC.state==='suspended'){ AC.resume(); } }catch(e){} }
+function beep(f,d,type,v){
+  try{
+    if(!AC) return;
+    f=f||880; d=d||.12; v=v||.14;
+    var o=AC.createOscillator(), g=AC.createGain();
+    o.type=type||'sine'; o.frequency.value=f; g.gain.value=v;
+    o.connect(g); g.connect(AC.destination);
+    o.start(); g.gain.exponentialRampToValueAtTime(.0001, AC.currentTime+d); o.stop(AC.currentTime+d+.03);
+  }catch(e){}
+}
+function fanfare(){ ensureAudio(); [523,659,784,1047].forEach(function(f,i){ setTimeout(function(){ beep(f,.18,'triangle',.16); }, i*110); }); }
+
+/* ===================== 計時器 ===================== */
+var T={id:null,end:0,left:-1,run:false};
+function curSecs(){ var s=SL[idx]; return s && s.t==='q' ? ROUNDS[s.ri].secs : 0; }
+function tStop(){ if(T.id){ clearInterval(T.id); T.id=null; } T.run=false; }
+function setEq(on){ var e=document.querySelector('.slide .eq'); if(e){ e.classList.toggle('live',on); } }
+function tStart(quiet){
+  ensureAudio();
+  var secs=curSecs();
+  if(T.left<=0 || T.left>secs){ T.left=secs; }
+  T.end=Date.now()+T.left*1000; T.run=true;
+  if(T.id) clearInterval(T.id);
+  T.id=setInterval(tick,100);
+  if(!quiet){ beep(660,.1); } setEq(true); paintTimer();
+}
+function tPause(){ T.left=Math.max(0,(T.end-Date.now())/1000); tStop(); setEq(false); paintTimer(); }
+function tick(){
+  var prev=Math.ceil(T.left);
+  T.left=Math.max(0,(T.end-Date.now())/1000);
+  var now=Math.ceil(T.left);
+  if(now!==prev && now>0 && now<=3){ beep(700,.08); }
+  if(T.left<=0){ tStop(); beep(200,.7,'sawtooth',.18); setEq(false); }
+  paintTimer();
+}
+function paintTimer(){
+  var secs=curSecs(); if(!secs) return;
+  var box=document.getElementById('timer'); if(!box) return;
+  var left = T.left<0 ? secs : T.left;
+  var disp = T.left<0 ? secs : Math.ceil(left);
+  document.getElementById('tnum').textContent = (T.left===0 && !T.run) ? '⏰' : disp;
+  document.getElementById('tfg').style.strokeDashoffset = (339.3*(1-left/secs)).toFixed(1);
+  box.classList.toggle('urgent', T.run && disp<=3);
+  box.classList.toggle('done', T.left===0 && !T.run);
+  var b=document.getElementById('tbtn');
+  if(b){ b.textContent = T.run ? '⏸ 暫停' : (T.left===0 ? '↺ 重來' : (T.left>0 && T.left<secs ? '▶ 繼續' : '▶ 開始計時')); }
+}
+
+/* ===================== 音檔（只存在這台裝置的瀏覽器，不會上傳） ===================== */
+function keyOf(ri,qi){ return ri+'-'+qi; }
+function cfgOf(ri,qi){
+  var c=clipCfg[keyOf(ri,qi)]||{}, dl=[8,8,3,8,15][ri];
+  return { start:(typeof c.start==='number'&&c.start>=0)?c.start:0, len:(typeof c.len==='number'&&c.len>0)?c.len:dl };
+}
+var idb=null;
+function idbOpen(cb){
+  try{
+    var rq=indexedDB.open('cg_audio_v4',1);
+    rq.onupgradeneeded=function(){ rq.result.createObjectStore('clips'); };
+    rq.onsuccess=function(){ idb=rq.result; if(cb) cb(); };
+    rq.onerror=function(){ if(cb) cb(); };
+  }catch(e){ if(cb) cb(); }
+}
+function idbPut(k,v){ try{ if(idb){ idb.transaction('clips','readwrite').objectStore('clips').put(v,k); } }catch(e){} }
+function idbLoadAll(done){
+  try{
+    if(!idb){ done(); return; }
+    var rq=idb.transaction('clips').objectStore('clips').openCursor();
+    rq.onsuccess=function(){ var c=rq.result; if(c){ RAW[c.key]=c.value; META[c.key]=c.value.name; c.continue(); } else { done(); } };
+    rq.onerror=function(){ done(); };
+  }catch(e){ done(); }
+}
+function decodeBuf(buf){
+  return new Promise(function(res,rej){
+    try{
+      ensureAudio();
+      var p=AC.decodeAudioData(buf,res,rej);
+      if(p && p.catch){ p.catch(function(){}); }
+    }catch(e){ rej(e); }
+  });
+}
+function decodeKey(k){
+  if(DEC[k]) return Promise.resolve(DEC[k]);
+  if(!RAW[k]) return Promise.reject(new Error('none'));
+  return decodeBuf(RAW[k].buf.slice(0)).then(function(b){ DEC[k]=b; return b; });
+}
+function setClip(k,file){
+  return file.arrayBuffer().then(function(buf){
+    return decodeBuf(buf.slice(0)).then(function(b){
+      RAW[k]={name:file.name,buf:buf}; META[k]=file.name; DEC[k]=b; idbPut(k,RAW[k]); return b;
+    });
+  });
+}
+function audioMsg(t){ var e=document.getElementById('cname'); if(e){ e.textContent=t; } }
+function paintAudio(){
+  var s=SL[idx]; if(s.t!=='q') return;
+  var k=keyOf(s.ri,s.qi), c=cfgOf(s.ri,s.qi);
+  var st=document.getElementById('cstart'), ln=document.getElementById('clen');
+  if(st){ st.value=c.start; } if(ln){ ln.value=c.len; }
+  audioMsg(RAW[k] ? ('✅ '+META[k]) : '尚未載入音檔');
+  var pb=document.getElementById('pbtn'); if(pb){ pb.textContent = RAW[k] ? '🎵 播放節錄' : '📁 載入音檔'; }
+}
+function stopClip(){
+  if(curSrc){ try{ curSrc.onended=null; curSrc.stop(); }catch(e){} curSrc=null; }
+  setEq(false);
+}
+function playClip(ri,qi){
+  var k=keyOf(ri,qi);
+  if(!RAW[k]){ pickKey=k; document.getElementById('filepick').click(); return; }
+  ensureAudio(); stopClip();
+  decodeKey(k).then(function(b){
+    var c=cfgOf(ri,qi);
+    var start=Math.min(c.start,Math.max(0,b.duration-0.5));
+    var len=Math.max(0.5,Math.min(c.len,b.duration-start));
+    var src=AC.createBufferSource(), g=AC.createGain();
+    src.buffer=b; src.connect(g); g.connect(AC.destination); src.start(0,start,len);
+    var t0=AC.currentTime;
+    g.gain.setValueAtTime(0,t0); g.gain.linearRampToValueAtTime(1,t0+.02);
+    if(len>.3){ g.gain.setValueAtTime(1,t0+len-.06); g.gain.linearRampToValueAtTime(0,t0+len); }
+    curSrc=src; setEq(true);
+    src.onended=function(){ if(curSrc===src){ curSrc=null; if(!T.run){ setEq(false); } } };
+    if(!T.run){ if(T.left===0){ T.left=-1; } tStart(true); }
+  }).catch(function(){ audioMsg('這個檔案無法播放，請換 mp3 / m4a / wav'); });
+}
+function loadedCount(){ return Object.keys(RAW).length; }
+function totalSongs(){ return ROUNDS.reduce(function(a,r){ return a+r.songs.length; },0); }
+function matchFiles(files){
+  var used={}, ok=0, keys=[], jobs=[];
+  ROUNDS.forEach(function(r,ri){ r.songs.forEach(function(sg,qi){ keys.push({k:keyOf(ri,qi),ri:ri,qi:qi,t:sg[0]}); }); });
+  Array.prototype.forEach.call(files,function(f){
+    var nm=f.name.replace(/\.[^.]+$/,'');
+    var m=nm.match(/^r([1-5])[-_ ]?(\d)(?!\d)/i), target=null;
+    if(m){ target=keys.filter(function(x){ return x.ri===(+m[1])-1 && x.qi===(+m[2])-1; })[0]; }
+    if(!target){
+      target=keys.filter(function(x){ return !used[x.k] && x.t && nm.indexOf(x.t)>-1; })
+                 .sort(function(a,b){ return b.t.length-a.t.length; })[0];
+    }
+    if(target && !used[target.k]){
+      used[target.k]=true;
+      jobs.push(setClip(target.k,f).then(function(){ ok++; }).catch(function(){}));
+    }
+  });
+  return Promise.all(jobs).then(function(){ return ok; });
+}
+
+/* ===================== 各頁 HTML ===================== */
+function slideHTML(s,i){
+  switch(s.t){
+    case 'cover': return '<section class="slide" style="--accent:var(--pink)">'+
+      '<div class="kicker">CLUB PARTY GAME · 30 MIN</div>'+
+      '<h1 class="title">猜歌大作戰</h1>'+
+      '<div class="sub">GUESS THE SONG</div>'+
+      '<div class="eq big live">'+eq(30)+'</div>'+
+      '<div class="badges"><span>🎧 4 大關卡</span><span>🎵 '+totalSongs()+' 首歌，跨獨立樂團／新生代／經典金曲</span><span>⏱ 30 分鐘</span><span>👥 3–6 隊</span></div>'+
+      '<button class="btn hot xl" data-act="next">▶ 開始遊戲</button></section>';
+
+    case 'goal': return '<section class="slide" style="--accent:var(--cyan)">'+
+      '<h2><small>MISSION</small>🎯 遊戲目標</h2>'+
+      '<p class="lead">聽歌識曲，<b>累積最高積分</b>的隊伍就是猜歌王！</p>'+
+      '<div class="cards">'+
+      '<div class="card c1"><div class="ic">👂</div><h3>耳朵要尖</h3><p>從前奏、旋律到 3 秒，考驗你對每一首歌的熟悉度。</p></div>'+
+      '<div class="card c2"><div class="ic">🤝</div><h3>默契要好</h3><p>隊友分工聽、討論、搶答，團隊默契決定勝負。</p></div>'+
+      '<div class="card c3"><div class="ic">🎉</div><h3>氣氛要嗨</h3><p>答錯不丟臉，大聲跟著唱、笑聲越大越好！</p></div>'+
+      '</div></section>';
+
+    case 'flow': return '<section class="slide" style="--accent:var(--pink)">'+
+      '<h2><small>GAME FLOW</small>📋 遊戲流程</h2>'+
+      '<p class="lead">四個關卡，<b>難度與分數一起升級</b>。</p>'+
+      '<div class="cards">'+ROUNDS.slice(0,4).map(function(r,k){
+        return '<div class="card c'+((k%3)+1)+'"><div class="ic">'+r.emoji+'</div><div class="stars">'+r.stars+'</div><h3>'+r.label+'・'+r.name+'</h3><p style="color:'+r.color+';font-weight:700">'+r.theme+'</p><p>'+esc(r.tip)+'</p><p style="margin-top:8px;color:var(--ink)"><b>每題 +'+r.pts+' 分</b>　×7 題</p></div>';
+      }).join('')+'</div></section>';
+
+    case 'rules': return '<section class="slide" style="--accent:var(--lime)">'+
+      '<h2><small>RULES</small>📣 搶答規則</h2>'+
+      '<div class="cards">'+
+      '<div class="card"><div class="ic">👥</div><h3>分組</h3><p>3–6 隊，每隊 3–5 人。點畫面下方隊名可直接改名。</p></div>'+
+      '<div class="card"><div class="ic">🙋</div><h3>搶答</h3><p>主持人播放後才能搶，舉手或按鈴，先到先答。</p></div>'+
+      '<div class="card"><div class="ic">❌</div><h3>答錯</h3><p>該隊失去本題資格，其他隊伍繼續搶答，不倒扣分。</p></div>'+
+      '<div class="card"><div class="ic">💡</div><h3>提示</h3><p>卡關可請主持人公布「歌手」，本題得分 −1（最低 1 分）。</p></div>'+
+      '<div class="card"><div class="ic">🚫</div><h3>禁止作弊</h3><p>不可使用 Shazam、聽歌辨曲或查詢歌詞，違規該題不計分。</p></div>'+
+      '</div></section>';
+
+    case 'score': return '<section class="slide" style="--accent:var(--yellow)">'+
+      '<h2><small>SCORING</small>🏆 計分方式</h2>'+
+      '<div class="cards">'+ROUNDS.slice(0,4).map(function(r,k){
+        return '<div class="card c'+((k%3)+1)+'" style="text-align:center;--accent:'+r.color+'"><div class="ic">'+r.emoji+'</div><div class="bigpts">+'+r.pts+'</div><h3>'+r.name+'</h3><p>每題答對得 '+r.pts+' 分</p></div>';
+      }).join('')+'</div>'+
+      '<div class="badges"><span>🔥 Round 3 終極題 ×2 → +6 分</span><span>🎯 全場最高 61 分</span><span>⚔️ 同分加賽</span></div>'+
+      '<p class="lead">前面落後也別放棄，<b>最後一題足以逆轉整場！</b></p></section>';
+
+    case 'time': var rows=[['0–2 分','開場・分組・講規則','🎤',2,'var(--purple)'],['2–8 分','Round 1　前奏猜歌 ×7','🎧',6,'var(--cyan)'],['8–14 分','Round 2　旋律猜歌 ×8','🎼',6,'var(--pink)'],['14–20 分','Round 3　3 秒猜歌 ×7','⚡',6,'var(--yellow)'],['20–26 分','Round 4　經典金曲 ×7','📼',6,'var(--purple)'],['26–30 分','加賽・結算・頒獎','🏆',4,'var(--lime)']];
+      return '<section class="slide" style="--accent:var(--cyan)">'+
+      '<h2><small>TIMETABLE</small>⏱ 30 分鐘時間表</h2>'+
+      '<div class="tt">'+rows.map(function(r){
+        return '<div class="ttr" style="--c:'+r[4]+'"><span class="tm">'+r[0]+'</span><div class="bar"><b style="width:'+Math.round(r[3]/6*100)+'%"></b><span>'+r[2]+'　'+r[1]+'</span></div></div>';
+      }).join('')+'</div>'+
+      '<p class="lead">每題約 1 分鐘（含揭曉），主持人掌握節奏就能準時收工。</p></section>';
+
+    case 'round': var r=ROUNDS[s.ri]; return '<section class="slide" style="--accent:'+r.color+'">'+
+      '<div class="kicker">'+r.label+'</div>'+
+      '<div style="font-size:clamp(64px,14vw,130px);line-height:1">'+r.emoji+'</div>'+
+      '<h2>'+r.name+'</h2>'+
+      '<div class="badges"><span style="border-color:var(--accent)">'+r.theme+'</span><span class="stars" style="border-color:var(--accent)">'+r.stars+'</span><span>每題 +'+r.pts+' 分</span><span>倒數 '+r.secs+' 秒</span></div>'+
+      '<div class="steps">'+r.how.map(function(h,k){ return '<div class="step"><div class="n">'+(k+1)+'</div><p>'+esc(h)+'</p></div>'; }).join('')+'</div>'+
+      (s.ri===4 ? '<button class="btn ghost" data-act="goto" data-to="result">沒有同分？跳過 ▶▶ 直接頒獎</button>' : '')+
+      '</section>';
+
+    case 'q': var q=ROUNDS[s.ri], final=(s.ri===2&&s.qi===6);
+      return '<section class="slide" style="--accent:'+q.color+'">'+
+      '<div class="qtop"><span class="chip">'+q.emoji+' '+q.label+' · '+q.name+'</span><span class="chip ghost">Q'+(s.qi+1)+' / '+q.songs.length+'</span><span class="chip pts">+'+qPts(s)+' 分'+(final?' 🔥 終極題 ×2':'')+'</span></div>'+
+      '<div class="qnum">'+(s.ri===4?'⚔️':'Q'+(s.qi+1))+'</div>'+
+      '<div class="qtip">'+esc(q.tip)+'</div>'+
+      '<div class="eq">'+eq(26)+'</div>'+
+      '<div class="timer" id="timer"><svg viewBox="0 0 120 120"><circle class="bg" cx="60" cy="60" r="54"/><circle class="fg" id="tfg" cx="60" cy="60" r="54"/></svg><b id="tnum">'+q.secs+'</b></div>'+
+      '<div class="ans" id="ans"></div>'+
+      '<div class="hintline" id="hintline"></div>'+
+      '<div class="ctrl"><button class="btn hot" id="pbtn" data-act="play">🎵 播放節錄</button><button class="btn" id="tbtn" data-act="timer">▶ 開始計時</button><button class="btn" data-act="hint">💡 提示</button><button class="btn" data-act="reveal">✅ 揭曉答案</button></div>'+
+      '<details class="acfg"><summary>⚙ 音檔設定</summary><div class="arow"><button class="btn ghost" data-act="pickfile" style="min-height:40px;padding:6px 14px;font-size:14px">📁 選音檔</button><label>開始 <input type="number" id="cstart" min="0" step="1"> 秒</label><label>長度 <input type="number" id="clen" min="1" step="1"> 秒</label></div><div id="cname" style="padding-bottom:6px"></div><div class="arow" style="padding-top:0"><a class="hlink" data-r="'+s.ri+'" data-q="'+s.qi+'" href="#" target="_blank" rel="noopener">🔍 在 YouTube 搜尋這首歌</a></div></details>'+
+      '</section>';
+
+    case 'result': return '<section class="slide" style="--accent:var(--yellow)">'+
+      '<h2 id="rtitle"><small>FINAL RESULT</small>🏆 最終排名</h2>'+
+      '<div class="rank" id="rank"></div>'+
+      '<p class="lead" id="rnote"></p>'+
+      '<div class="ctrl"><button class="btn ghost" data-act="reset">🔄 重置所有分數</button></div>'+
+      '</section>';
+
+    case 'host': return '<section class="slide" style="--accent:var(--cyan)">'+
+      '<span class="hostwarn">🔒 主持人專用頁 — 投影時請勿停留在此頁</span>'+
+      '<h2><small>HOST CHEAT SHEET</small>🎛️ 備歌清單</h2>'+
+      '<p class="lead" style="font-size:clamp(13px,1.9vw,17px)">點任何歌名或歌手即可修改，會自動儲存並同步到題目頁。</p>'+
+      '<div class="hcols">'+ROUNDS.map(function(r,ri){
+        return '<div class="hcol" style="--c:'+r.color+'"><h4>'+r.emoji+' '+r.name+'</h4>'+r.songs.map(function(sg,qi){
+          return '<div class="hrow"><span class="hn">'+(qi+1)+'</span><span><span class="ed" contenteditable="true" spellcheck="false" data-r="'+ri+'" data-q="'+qi+'" data-f="0">'+esc(sg[0])+'</span> <span class="ed art" contenteditable="true" spellcheck="false" data-r="'+ri+'" data-q="'+qi+'" data-f="1">'+esc(sg[1])+'</span><span class="hs">'+(RAW[keyOf(ri,qi)]?'🔊':'')+'</span><a class="hlink" data-r="'+ri+'" data-q="'+qi+'" href="#" target="_blank" rel="noopener" aria-label="搜尋">🔍</a></span></div>';
+        }).join('')+'</div>';
+      }).join('')+'</div>'+
+      '<div class="hnote"><b>🎵 載入音檔</b>（已載入 '+loadedCount()+' / '+totalSongs()+' 首）<br>'+
+      '選入你自己合法擁有的歌曲檔（mp3 / m4a / wav），檔名含歌名（如「晴天.mp3」）或寫成 R1-3.mp3（第 1 關第 3 題）就會自動對應。音檔只存在這台裝置的瀏覽器，不會上傳；換裝置要重新載入。'+
+      '<div class="ctrl" style="justify-content:flex-start;margin-top:10px"><button class="btn hot" data-act="bulk">📁 一次載入全部歌曲</button></div>'+
+      '<div class="bulkst" id="bulkstatus">'+esc(BULKMSG)+'</div></div>'+
+      '<div class="hnote"><b>📚 備用題庫（台灣獨立樂團，可換進上方欄位）</b><br>'+
+      'TRASH：世界盡頭・歸零・希望你回來・終究還是因為愛<br>'+
+      'hue：爛情歌・偽<br>'+
+      '老王樂隊：我還年輕 我還年輕・安九<br>'+
+      '理想混蛋：不是因為天氣晴朗才愛你・離開的一路上・滯留鋒<br>'+
+      '麋先生：長成什麼樣子算愛情・嗜愛動物・都是浪漫害的<br>'+
+      '草東沒有派對：大風吹・山海　落日飛車：My Jinji　滅火器：島嶼天光　告五人：披星戴月的想你・愛人錯過<br>'+
+      '<b>經典金曲（1980–2000）</b>：齊秦「外面的世界」・伍佰「愛你一萬年」・李宗盛「山丘」「陰天」・Beyond「海闊天空」・張學友「吻別」・趙傳「我是一隻小小鳥」・王傑「一場遊戲一場夢」・童安格「其實你不懂我的心」</div>'+
+      '<div class="hnote"><b>備歌小技巧</b><br>'+
+      '🎧 前奏：直接從歌曲開頭播 5–8 秒。<br>'+
+      '🎼 旋律：剪一段沒有歌詞的前奏、間奏或哼唱版，凸顯旋律線條。<br>'+
+      '⚡ 3 秒：先剪好 3 秒副歌片段，播放時才不會手忙腳亂。<br>'+
+      '🎚 每題可在題目頁的「⚙ 音檔設定」調整開始秒數與長度，前奏 0 秒、旋律題與 3 秒建議選在副歌或最有記憶點的段落。<br><br>'+
+      '<b>快捷鍵</b>：<kbd>→</kbd>/<kbd>空白</kbd> 下一頁　<kbd>←</kbd> 上一頁　<kbd>T</kbd> 計時　<kbd>H</kbd> 提示　<kbd>R</kbd> 揭曉　<kbd>1</kbd>–<kbd>6</kbd> 給隊伍加分（Shift 扣分）　<kbd>A</kbd> 播放節錄　<kbd>P</kbd> 開／關此頁</div>'+
+      '<div class="ctrl"><button class="btn ghost" data-act="reset">🔄 重置所有分數</button></div>'+
+      '</section>';
+  }
+  return '';
+}
+
+/* ===================== 答案區 / 排名 ===================== */
+function paintAns(){
+  var s=SL[idx]; if(s.t!=='q') return;
+  var sg=ROUNDS[s.ri].songs[s.qi];
+  var a=document.getElementById('ans'), h=document.getElementById('hintline');
+  if(!a) return;
+  if(ui.rev[idx]){ a.classList.add('show'); a.innerHTML='<div class="at">《'+esc(sg[0])+'》</div><div class="aa">'+esc(sg[1])+'</div>'; }
+  else { a.classList.remove('show'); a.innerHTML='<div class="aq">？？？</div>'; }
+  h.innerHTML = (ui.hint[idx] && !ui.rev[idx]) ? '💡 提示：歌手是 <b>'+esc(sg[1])+'</b>（本題 −1 分）' : '';
+}
+function paintRank(){
+  var box=document.getElementById('rank'); if(!box) return;
+  var list=teams.map(function(t,i){ return {n:t.n,s:t.s,i:i}; }).sort(function(a,b){ return b.s-a.s; });
+  var max=Math.max(1,list[0].s);
+  var meds=['🥇','🥈','🥉'];
+  box.innerHTML=list.map(function(t){
+    var rk=list.filter(function(x){ return x.s>t.s; }).length;
+    return '<div class="rrow'+(rk===0&&t.s>0?' first':'')+'" style="--tc:'+TC[t.i%TC.length]+'"><div class="fill" style="width:'+Math.round(t.s/max*100)+'%"></div><span class="md">'+(rk<3?meds[rk]:'🎵')+'</span><span class="rn">'+esc(t.n)+'</span><span class="rs">'+t.s+'</span></div>';
+  }).join('');
+  var note=document.getElementById('rnote');
+  var tops=list.filter(function(x){ return x.s===list[0].s; });
+  note.innerHTML = list[0].s===0 ? '還沒有人得分，快開始遊戲吧！' :
+    (tops.length>1 ? '⚔️ <b>'+tops.map(function(x){return esc(x.n);}).join('、')+'</b> 同分！回到「同分加賽」決勝負。' : '🎉 恭喜 <b>'+esc(tops[0].n)+'</b> 榮登猜歌王！');
+}
+function confetti(){
+  var cols=['#21e6ff','#ff2d95','#ffe14d','#7dffb0','#b28cff'];
+  for(var i=0;i<46;i++){
+    var c=document.createElement('span'); c.className='conf';
+    c.style.left=(Math.random()*100)+'vw';
+    c.style.background=cols[i%cols.length];
+    c.style.setProperty('--dx',((Math.random()*2-1)*120)+'px');
+    c.style.animationDuration=(2.6+Math.random()*2.4)+'s';
+    c.style.animationDelay=(Math.random()*.8)+'s';
+    document.body.appendChild(c);
+    (function(el){ setTimeout(function(){ el.remove(); },6200); })(c);
+  }
+}
+
+/* ===================== 計分列 ===================== */
+function renderTeams(){
+  var p=curPts();
+  document.getElementById('teams').innerHTML = teams.map(function(t,i){
+    return '<div class="team" style="--tc:'+TC[i%TC.length]+'"><button class="tm" data-act="dec" data-i="'+i+'" aria-label="扣分">−</button><div class="tinfo"><span class="tn" contenteditable="true" spellcheck="false" data-i="'+i+'">'+esc(t.n)+'</span><b class="ts" id="ts'+i+'">'+t.s+'</b></div><button data-act="inc" data-i="'+i+'" aria-label="加分">+'+p+'</button></div>';
+  }).join('') + '<div class="tctl"><button data-act="addteam" aria-label="新增隊伍">＋</button><button data-act="rmteam" aria-label="移除隊伍">－</button></div>';
+}
+function bump(i){
+  var el=document.getElementById('ts'+i); if(!el) return;
+  el.textContent=teams[i].s; el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop');
+  if(SL[idx].t==='result') paintRank();
+  save();
+}
+
+/* ===================== 渲染 ===================== */
+function render(){
+  tStop(); stopClip(); T.left=-1;
+  var s=SL[idx];
+  var st=document.getElementById('stage');
+  st.innerHTML=slideHTML(s,idx);
+  st.scrollTop=0;
+  document.querySelector('#prog i').style.width=((idx+1)/SL.length*100)+'%';
+  document.getElementById('pg').textContent=(idx+1)+' / '+SL.length;
+  renderTeams();
+  if(s.t==='q'){ paintAns(); paintTimer(); paintAudio(); }
+  if(s.t==='result'){ paintRank(); if(teams.some(function(t){return t.s>0;})) confetti(); }
+  save();
+}
+function go(n){ if(n<0||n>=SL.length||n===idx) return; idx=n; render(); }
+
+/* ===================== 動作 ===================== */
+function act(a,b){
+  var i=b && b.dataset ? parseInt(b.dataset.i,10) : NaN;
+  switch(a){
+    case 'next': go(idx+1); break;
+    case 'prev': go(idx-1); break;
+    case 'goto': var to=SL.findIndex(function(x){ return x.t===b.dataset.to; }); if(to>=0) go(to); break;
+    case 'timer': if(SL[idx].t!=='q') break; if(T.run) tPause(); else { if(T.left===0) T.left=-1; tStart(); } break;
+    case 'hint': if(SL[idx].t==='q'){ ui.hint[idx]=true; paintAns(); beep(520,.1); } break;
+    case 'reveal': if(SL[idx].t==='q'){ ui.rev[idx]=true; if(T.run) tPause(); paintAns(); fanfare(); } break;
+    case 'play': if(SL[idx].t==='q'){ playClip(SL[idx].ri,SL[idx].qi); } break;
+    case 'pickfile': if(SL[idx].t==='q'){ pickKey=keyOf(SL[idx].ri,SL[idx].qi); document.getElementById('filepick').click(); } break;
+    case 'bulk': document.getElementById('bulkpick').click(); break;
+    case 'inc': ensureAudio(); teams[i].s+=curPts(); beep(880,.12,'triangle'); bump(i); break;
+    case 'dec': teams[i].s=Math.max(0,teams[i].s-curPts()); bump(i); break;
+    case 'addteam': if(teams.length<6){ teams.push({n:String.fromCharCode(65+teams.length)+' 隊',s:0}); renderTeams(); save(); if(SL[idx].t==='result') paintRank(); } break;
+    case 'rmteam': if(teams.length>2){ teams.pop(); renderTeams(); save(); if(SL[idx].t==='result') paintRank(); } break;
+    case 'reset':
+      if(b.dataset.armed){ teams.forEach(function(t){ t.s=0; }); renderTeams(); if(SL[idx].t==='result') paintRank(); save(); b.textContent='✅ 已重置'; b.dataset.armed=''; }
+      else { b.dataset.armed='1'; b.textContent='再按一次確認重置'; setTimeout(function(){ if(b.isConnected && b.dataset.armed){ b.dataset.armed=''; b.textContent='🔄 重置所有分數'; } },3000); }
+      break;
+  }
+}
+document.addEventListener('click',function(e){
+  var a=e.target.closest('a.hlink');
+  if(a){ var ri=+a.dataset.r, sg=ROUNDS[ri].songs[+a.dataset.q]; var kw=sg[0]+' '+sg[1]+(ri===1?' 純音樂 instrumental':''); a.href='https://www.youtube.com/results?search_query='+encodeURIComponent(kw); return; }
+  var b=e.target.closest('[data-act]'); if(!b) return;
+  act(b.dataset.act,b);
+});
+
+/* 隊名／歌單編輯 */
+document.addEventListener('input',function(e){
+  var el=e.target;
+  if(el.classList && el.classList.contains('tn')){
+    var i=parseInt(el.dataset.i,10);
+    teams[i].n=(el.textContent.trim().slice(0,8))||('隊伍 '+(i+1));
+    save(); if(SL[idx].t==='result') paintRank();
+  } else if(el.classList && el.classList.contains('ed')){
+    var r=parseInt(el.dataset.r,10), q=parseInt(el.dataset.q,10), f=parseInt(el.dataset.f,10);
+    ROUNDS[r].songs[q][f]=el.textContent.trim();
+    save();
+  }
+});
+document.addEventListener('keydown',function(e){
+  var el=e.target;
+  if(el && el.tagName==='INPUT'){ return; }
+  if(el && el.isContentEditable){ if(e.key==='Enter'){ e.preventDefault(); el.blur(); } return; }
+  if(e.metaKey||e.ctrlKey||e.altKey) return;
+  var k=e.key;
+  if(k==='ArrowRight'||k===' '||k==='PageDown'){ e.preventDefault(); act('next'); }
+  else if(k==='ArrowLeft'||k==='PageUp'){ e.preventDefault(); act('prev'); }
+  else if(k==='t'||k==='T'){ act('timer'); }
+  else if(k==='h'||k==='H'){ act('hint'); }
+  else if(k==='a'||k==='A'){ act('play'); }
+  else if(k==='r'||k==='R'||k==='Enter'){ if(SL[idx].t==='q'){ e.preventDefault(); act('reveal'); } }
+  else if(k==='p'||k==='P'){ if(idx===HOST_IDX){ go(lastIdx); } else { lastIdx=idx; go(HOST_IDX); } }
+  else if(e.code && /^Digit[1-6]$/.test(e.code)){
+    var ti=parseInt(e.code.slice(5),10)-1;
+    if(ti<teams.length){ var fake={dataset:{i:String(ti)}}; act(e.shiftKey?'dec':'inc',fake); }
+  }
+});
+
+/* 左右滑動換頁 */
+(function(){
+  var sx=0,sy=0,tracking=false;
+  var st=document.getElementById('stage');
+  st.addEventListener('touchstart',function(e){ if(e.touches.length!==1) return; sx=e.touches[0].clientX; sy=e.touches[0].clientY; tracking=true; },{passive:true});
+  st.addEventListener('touchend',function(e){
+    if(!tracking) return; tracking=false;
+    var t=e.changedTouches[0], dx=t.clientX-sx, dy=t.clientY-sy;
+    if(Math.abs(dx)>70 && Math.abs(dy)<50){ act(dx<0?'next':'prev'); }
+  },{passive:true});
+})();
+
+document.getElementById('filepick').addEventListener('change',function(e){
+  var f=e.target.files && e.target.files[0]; e.target.value='';
+  if(!f || !pickKey) return;
+  var k=pickKey; audioMsg('載入中…');
+  setClip(k,f).then(function(){
+    paintAudio(); if(SL[idx].t==='host'){ render(); }
+  }).catch(function(){ audioMsg('這個檔案無法解碼，請換 mp3 / m4a / wav'); });
+});
+document.getElementById('bulkpick').addEventListener('change',function(e){
+  var fs=e.target.files; if(!fs || !fs.length) return;
+  var files=Array.prototype.slice.call(fs); e.target.value='';
+  var bs=document.getElementById('bulkstatus'); if(bs){ bs.textContent='載入中，請稍候…'; }
+  matchFiles(files).then(function(n){
+    var miss=[];
+    ROUNDS.forEach(function(r,ri){ r.songs.forEach(function(sg,qi){ if(!RAW[keyOf(ri,qi)]){ miss.push(sg[0]); } }); });
+    BULKMSG='本次比對成功 '+n+' 首（共選 '+files.length+' 個檔案）。'+(miss.length?'尚缺：'+miss.join('、'):'全部到齊 🎉');
+    if(SL[idx].t==='host'){ render(); }
+  });
+});
+document.addEventListener('change',function(e){
+  var el=e.target; if(el.id!=='cstart' && el.id!=='clen') return;
+  var s=SL[idx]; if(s.t!=='q') return;
+  var k=keyOf(s.ri,s.qi), c=cfgOf(s.ri,s.qi), v=parseFloat(el.value);
+  if(!(v>=0)){ paintAudio(); return; }
+  if(el.id==='cstart'){ c.start=v; } else { c.len=Math.max(1,v); }
+  clipCfg[k]=c; save(); paintAudio();
+});
+idbOpen(function(){ idbLoadAll(function(){
+  var s=SL[idx];
+  if(s.t==='q'){ paintAudio(); } else if(s.t==='host'){ render(); }
+}); });
+
+render();
+</script>
+</body>
+</html>
